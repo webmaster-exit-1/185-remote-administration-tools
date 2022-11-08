@@ -1,0 +1,31 @@
+Restorator Crack info:
+
+Limitations of the Trial Version
+	*REMOVED* Expires after 30 days. 
+	*REMOVED* Adds texts ("Patched with Restorator" etc.) to MENU, DIALOG, and VERSION resources upon saving. 
+	
+	*NOT REMOVED* Does not include ResPatcher or the Grab Resources tool. 
+	(Limited user support. )
+
+Grab Resources tool programcode is completely removed
+
+Restorator-Demo 3.5.1.1457
+005645DE >  Demo-MSGBOX Code
+0056465A 
+
+Restorator 3.0.0.1129
+0052B9F2 >  Res-Grab Code
+0052C386 
+
+
+Restorator-Demo 3.5.1.1457
+Adds texts & CRC Check removed
+0015930C: 55 C3
+
+Resource-patch
+TREG
+Timer1 -> TButtonCancel1
+Queryunload deleted
+
+
+<CW2K>
