@@ -28,8 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.JTextArea;
@@ -42,17 +40,17 @@ import java.util.HashSet;
 import javax.swing.JSplitPane;
 
 public class MonitorPanel extends JPanel {
-	
+
 	private UserGUI gui;
 	private boolean monitoring = false;
 	private boolean callMonitor;
-	
+
 	private JLabel lblReceived;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_3;
-	
+
 	private JTextArea phoneNumbersTextArea;
 	private JButton btnStartMonitoring;
 	private ColorPane colorPane;
@@ -64,7 +62,7 @@ public class MonitorPanel extends JPanel {
 	public MonitorPanel(UserGUI gui, boolean callMonitor) {
 		this.gui = gui;
 		this.callMonitor = callMonitor;
-		
+
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(1.0);
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -82,34 +80,34 @@ public class MonitorPanel extends JPanel {
 					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
 					.addGap(9))
 		);
-		
+
 		JPanel panel = new JPanel();
 		splitPane.setRightComponent(panel);
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Optional filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		btnStartMonitoring = new JButton("Start monitoring");
 		btnStartMonitoring.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fireButtonMonitoring();
 			}
 		});
-		
+
 		JLabel lblTypeOfCall = new JLabel("Phone numbers :");
-		
+
 		phoneNumbersTextArea = new JTextArea();
-		
+
 		lblReceived = new JLabel("Incomming call");
 		lblReceived.setForeground(Color.DARK_GRAY);
-		
+
 		lblNewLabel = new JLabel("Missed call");
 		lblNewLabel.setForeground(Color.ORANGE);
-		
+
 		lblNewLabel_1 = new JLabel("Accepted call");
 		lblNewLabel_1.setForeground(Color.GREEN);
-		
+
 		lblNewLabel_2 = new JLabel("Sent call");
 		lblNewLabel_2.setForeground(Color.BLUE);
-		
+
 		lblNewLabel_3 = new JLabel("Hanged up call");
 		lblNewLabel_3.setForeground(Color.RED);
 		GroupLayout gl_panel = new GroupLayout(panel);
@@ -150,17 +148,17 @@ public class MonitorPanel extends JPanel {
 					.addContainerGap())
 		);
 		panel.setLayout(gl_panel);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
-		
+
 		colorPane = new ColorPane();
 		scrollPane.setViewportView(colorPane);
 		setLayout(groupLayout);
-		
+
 		if(!callMonitor) this.hideCallLabels();
 	}
-	
+
 	private void hideCallLabels() {
 		lblNewLabel.setVisible(false);
 		lblNewLabel_1.setVisible(false);
@@ -168,7 +166,7 @@ public class MonitorPanel extends JPanel {
 		lblNewLabel_3.setVisible(false);
 		lblReceived.setVisible(false);
 	}
-	
+
 	private void fireButtonMonitoring() {
 		if(monitoring) {
 			btnStartMonitoring.setText("Start monitoring");
@@ -179,7 +177,7 @@ public class MonitorPanel extends JPanel {
 			colorPane.setText("");
 			btnStartMonitoring.setText("Stop monitoring");
 			monitoring = true;
-			
+
 			HashSet<String> phoneNumbers;
 			if(phoneNumbersTextArea.getText().equals("")) {
 				phoneNumbers = null;
@@ -192,14 +190,14 @@ public class MonitorPanel extends JPanel {
 					phoneNumbers.add(phone);
 				}
 			}
-			
+
 			if(callMonitor)
 				gui.fireStartCallMonitoring(phoneNumbers);
 			else
 				gui.fireStartSMSMonitoring(phoneNumbers);
 		}
 	}
-	
+
 	public void addMonitoredCall(int type, String phoneNumber) {
 		Color color = Color.darkGray;
 		String message = "";
@@ -224,18 +222,18 @@ public class MonitorPanel extends JPanel {
 			color = Color.red;
 			message = "Hang up Call";
 		}
-		
+
 		colorPane.append(color,message+ phoneNumber+" at "+ (new Date(System.currentTimeMillis())).toString() +"\n");
 	}
-	
+
 	public void addMonitoredSMS(String addr, long date, String body) {
 		colorPane.append(Color.black, "Number: "+addr +"\nBody:\n"+body+"\nSMS at "+(new Date(date)).toString()+"\n\n");
 	}
-	
+
 	public boolean getMonitoring() {
 		return monitoring;
 	}
-	
+
 	public boolean getCallMonitor() {
 		return callMonitor;
 	}

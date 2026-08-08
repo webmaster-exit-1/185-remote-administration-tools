@@ -252,7 +252,6 @@ public class FileTreePanel extends JPanel {
 
 	public void updateFileTree(ArrayList<MyFile> fileList) {
 
-		File dir = null;
 		/*
 		for (MyFile file : fileList) {
 			if(file.getPath().equals("src")) dir = file.getFile();

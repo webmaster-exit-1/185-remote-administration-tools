@@ -38,12 +38,9 @@ import java.util.ArrayList;
 import javax.swing.JTextArea;
 
 import Packet.AdvancedInformationPacket;
-import javax.swing.JList;
 import javax.swing.JCheckBox;
 
 import javax.swing.JScrollPane;
-import java.awt.Component;
-import javax.swing.Box;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 

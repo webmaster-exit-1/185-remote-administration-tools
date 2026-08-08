@@ -41,7 +41,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JSplitPane;
@@ -51,17 +50,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PicturePanel extends JPanel {
-	
+
 	private JLabel imgLabel;
 	private JPanel panel;
-	private JComboBox comboBox;
-	
+	private JComboBox<String> comboBox;
+
 	private UserGUI gui;
 	private JSplitPane splitPane;
 	private JPanel panel_1;
-	private JList list;
+	private JList<String> list;
 	private JPanel panel_2;
-	
+
 	private String lastTitle = "";
 	private ArrayList<String> listAddr = new ArrayList<String>();
 
@@ -70,9 +69,9 @@ public class PicturePanel extends JPanel {
 	 */
 	public PicturePanel(UserGUI gui) {
 		this.gui = gui;
-		
-		Object[] items = {"Back camera", "Front camera"};
-		
+
+		String[] items = {"Back camera", "Front camera"};
+
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(1.0);
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -90,25 +89,25 @@ public class PicturePanel extends JPanel {
 					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
 					.addContainerGap())
 		);
-		
+
 		panel = new JPanel();
 		splitPane.setLeftComponent(panel);
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		
+
 		imgLabel = new JLabel();
 		panel.add(imgLabel);
-		
+
 		panel_1 = new JPanel();
 		splitPane.setRightComponent(panel_1);
-		
-		list = new JList();
+
+		list = new JList<String>();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				fireMouseClickedInList();
 			}
 		});
-		
+
 		panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
@@ -130,8 +129,8 @@ public class PicturePanel extends JPanel {
 					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
-		comboBox = new JComboBox(items);
-		
+		comboBox = new JComboBox<String>(items);
+
 		JButton btnTakePicture = new JButton("Take Picture");
 		btnTakePicture.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -161,11 +160,11 @@ public class PicturePanel extends JPanel {
 		panel_1.setLayout(gl_panel_1);
 		setLayout(groupLayout);
 	}
-	
+
 	private void fireTakePicture() {
 		gui.fireTakePicture();
 	}
-	
+
 	private void fireMouseClickedInList() {
 		String title = (String) list.getSelectedValue();
 		if(!lastTitle.equals(title)) {
@@ -180,30 +179,30 @@ public class PicturePanel extends JPanel {
 			}
 		}
 	}
-	
+
 	public void updateImage(byte[] data) {
 		try{
 			String title = "download/" + (new Date(System.currentTimeMillis())).toString().replaceAll(" ", "_")+".jpeg";
 			FileOutputStream out = new FileOutputStream(title);
 			out.write(data);
 			out.close();
-			
+
 			Image image = scaleImage(ImageIO.read(new File(title)), 560, 420);
 			ImageIcon icon = new ImageIcon(image);
 			imgLabel.setIcon(icon);
 			repaint();
 			validate();
-			
+
 			lastTitle = title;
 			listAddr.add(title);
-			list.setListData(listAddr.toArray());
+			list.setListData(listAddr.toArray(new String[0]));
 			list.setSelectedValue(title, true);
-			
+
 		} catch(Exception e) {
 			gui.errLogTxt(System.currentTimeMillis(), "Error in creating picture");
 		}
 	}
-	
+
 	public static Image scaleImage(Image source, int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) img.getGraphics();

@@ -49,18 +49,18 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
 public class SMSLogPanel extends JPanel {
-	
+
 	public static Color IN_SMS = new Color(14,92,7);
 	public static Color OUT_SMS = Color.blue;
-	
+
 	private JTextArea areaKeyword;
 	private JFormattedTextField formattedMinDate;
 	private JFormattedTextField formattedMaxDate;
-	private JComboBox sourceBox;
-	private JComboBox typeBox;
+	private JComboBox<String> sourceBox;
+	private JComboBox<String> typeBox;
 	private ColorPane colorPane;
 	private JTextField phoneNumberField;
-	
+
 	private UserGUI gui;
 
 	/**
@@ -68,15 +68,15 @@ public class SMSLogPanel extends JPanel {
 	 */
 	public SMSLogPanel(UserGUI gui) {
 		this.gui = gui;
-		
+
 		JLabel lblTypes = new JLabel("Types :");
-		
+
 		JLabel lblIncoming = new JLabel("received SMS");
 		lblIncoming.setForeground(IN_SMS);
-		
+
 		JLabel lblSent = new JLabel("sent SMS");
 		lblSent.setForeground(OUT_SMS);
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(1.0);
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -107,49 +107,49 @@ public class SMSLogPanel extends JPanel {
 					.addComponent(splitPane)
 					.addContainerGap())
 		);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
-		
+
 		colorPane = new ColorPane();
 		scrollPane.setViewportView(colorPane);
-		
+
 		JPanel panel = new JPanel();
 		splitPane.setRightComponent(panel);
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Optionnal filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JLabel lblTypeOfCall = new JLabel("Source SMS :");
-		
-		sourceBox = new JComboBox();
-		sourceBox.setModel(new DefaultComboBoxModel(new String[] {"All", "Received", "Sent"}));
-		
+
+		sourceBox = new JComboBox<String>();
+		sourceBox.setModel(new DefaultComboBoxModel<String>(new String[] {"All", "Received", "Sent"}));
+
 		JLabel lblPhoneNumber = new JLabel("Phone number :");
-		
+
 		phoneNumberField = new JTextField();
 		phoneNumberField.setColumns(10);
-		
+
 		JLabel lblMinDate = new JLabel("Not before (dd/mm/yyyy)  :");
-		
+
 		formattedMinDate = new JFormattedTextField(createFormatter("**/**/****"));
-		
+
 		JLabel lblNotAfter = new JLabel("Not after");
-		
+
 		formattedMaxDate = new JFormattedTextField(createFormatter("**/**/****"));
-		
+
 		JButton btnGetSMSLogs = new JButton("Get SMS");
 		btnGetSMSLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fireGetSMS();
 			}
 		});
-		
+
 		JLabel lblTypeOfSms = new JLabel("Type of SMS :");
-		
-		typeBox = new JComboBox();
-		typeBox.setModel(new DefaultComboBoxModel(new String[] {"All", "Unread", "Read"}));
-		
+
+		typeBox = new JComboBox<String>();
+		typeBox.setModel(new DefaultComboBoxModel<String>(new String[] {"All", "Unread", "Read"}));
+
 		JLabel lblBodyKeyword = new JLabel("Body keyword :");
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
@@ -202,14 +202,14 @@ public class SMSLogPanel extends JPanel {
 					.addComponent(btnGetSMSLogs)
 					.addGap(5))
 		);
-		
+
 		areaKeyword = new JTextArea();
 		scrollPane_1.setViewportView(areaKeyword);
 		panel.setLayout(gl_panel);
 		setLayout(groupLayout);
 
 	}
-	
+
 	protected MaskFormatter createFormatter(String s) {
 	    MaskFormatter formatter = null;
 	    try {
@@ -218,7 +218,7 @@ public class SMSLogPanel extends JPanel {
 	    }
 	    return formatter;
 	}
-	
+
 	private void fireGetSMS() {
 		String request = "";
 		///if(sourceBox.getSelectedIndex() != 0) request += " _id = "+sourceBox.getSelectedIndex();
@@ -230,13 +230,12 @@ public class SMSLogPanel extends JPanel {
 			if(request.equals("")) request += " address = '"+phoneNumberField.getText()+"'";
 			else request += " and address = '"+phoneNumberField.getText()+"'";
 		}
-		
+
 		if(formattedMinDate.getValue() != null) {
 			if(!formattedMinDate.getValue().equals("  /  /    ")) {
 				System.out.println("Valeur min date : "+formattedMinDate.getValue());
-				String[] res = ((String) formattedMinDate.getValue()).split("/");
 				//Date date = new Date(Integer.valueOf(res[0]), Integer.valueOf(res[1]), Integer.valueOf(res[2]));
-				
+
 				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 				Date date;
 				try {
@@ -246,7 +245,7 @@ public class SMSLogPanel extends JPanel {
 				} catch (ParseException e) {
 					gui.errLogTxt(new Date().getTime(), "Bad format for minimum date");
 				}
-				
+
 			}
 		}
 		if(formattedMaxDate.getValue() != null) {
@@ -254,7 +253,7 @@ public class SMSLogPanel extends JPanel {
 				System.out.println("Valeur min date : "+formattedMaxDate.getValue());
 				String[] res = ((String) formattedMaxDate.getValue()).split("/");
 				//Date date = new Date(Integer.valueOf(res[0]), Integer.valueOf(res[1]), Integer.valueOf(res[2]));
-				
+
 				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 				Date date;
 				try {
@@ -267,25 +266,25 @@ public class SMSLogPanel extends JPanel {
 
 			}
 		}
-		
+
 		if(typeBox.getSelectedIndex() != 0) {
 			if(request.equals("")) request += " read = " + (typeBox.getSelectedIndex()-1);
 			else request += " and read = " + (typeBox.getSelectedIndex()-1);
 		}
-		
+
 		if(sourceBox.getSelectedIndex() != 0) {
 			if(request.equals("")) request += " type = " + (sourceBox.getSelectedIndex());
 			else request += " and type = " + (sourceBox.getSelectedIndex());
 		}
-		
+
 		if(!areaKeyword.getText().equals("")) {
 			if(request.equals("")) request += "body like '%" + areaKeyword.getText()+"%'";
 			else request += " and body like '%" + areaKeyword.getText()+"%'";
 		}
-		
+
 		gui.fireGetSMS(request);
 	}
-	
+
 	public void updateSMS(ArrayList<SMSPacket> logsList) {
 		this.clearPanel();
 		for(SMSPacket p: logsList) {
@@ -302,23 +301,23 @@ public class SMSLogPanel extends JPanel {
 			}
 			else
 				mess+="Sent: ";
-			
+
 			mess+=p.getAddress()+"\n";
 			mess+="Body:\n";
 			mess+=p.getBody()+"\n--\n";
 			mess+=new Date(p.getDate()).toString()+"\n\n";
-			
+
 			if(p.getType() == 1)
 				colorPane.append(IN_SMS, mess);
 			else if(p.getType() == 2)
 				colorPane.append(OUT_SMS, mess);
 		}
 	}
-	
+
 	public void addSMS(String txt, Color color) {
 		colorPane.append(color, txt);
 	}
-	
+
 	public void clearPanel() {
 		colorPane.setText("");
 	}
