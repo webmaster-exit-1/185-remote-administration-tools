@@ -19,7 +19,6 @@
 */
 package handler;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,28 +28,22 @@ import java.util.HashMap;
 import server.Server;
 import Packet.FilePacket;
 import Packet.Packet;
-import Packet.PreferencePacket;
 import gui.GUI;
 
 public class FileHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
 	private String imei;
-	private String dir;
-	private String dwnName;
 	private short nextNumSeq = 0;
 	private HashMap<Short, byte[]> tempData;
-	private long dataLength = 0;
 	private short max = 10;
 	private FileOutputStream fout;
-	
+
 	public FileHandler(int chan, String imei, GUI gui, String dir, String dwnName) {
 		channel = chan;
 		this.imei = imei;
 		this.gui = gui;
-		this.dir = dir;
-		this.dwnName = dwnName;
 		tempData = null;
 		File f = new File(dir);
 		if(!f.exists())
@@ -74,10 +67,10 @@ public class FileHandler implements PacketHandler {
 		//gui.logTxt("File data has been received");
 		//c.getChannelHandlerMap().get(imei).removeListener(channel);
 		FilePacket packet = (FilePacket) p;
-		
+
 		dataLength += packet.getData().length;
 		tempData.put(packet.getNumSeq(), packet.getData());
-		
+
 		if(packet.getMf() == 0) {
 			byte[] file = new byte[dataLength];
 			int ptr = 0;
@@ -91,7 +84,7 @@ public class FileHandler implements PacketHandler {
 					break;
 				}
 			}
-			
+
 			if(file != null) {
 				try {
 					DataOutputStream dos = new DataOutputStream(new FileOutputStream(dir+File.separator+dwnName));
@@ -104,22 +97,20 @@ public class FileHandler implements PacketHandler {
 			}
 		}
 	}*/
-	
+
 	@Override
 	public void handlePacket(Packet p, String temp_imei, Server c) {
 		//gui.logTxt("File data has been received");
 		//c.getChannelHandlerMap().get(imei).removeListener(channel);
 		c.getChannelHandlerMap().get(imei).getStorage(channel).reset();
 		FilePacket packet = (FilePacket) p;
-		
+
 		//dataLength += packet.getData().length;
 		try {
-			int length = packet.getData().length;
 			short numSeq = packet.getNumSeq();
-			
+
 			if(numSeq == nextNumSeq) {
 				fout.write(packet.getData());
-				dataLength += length;
 				fillFile(numSeq);
 				if(packet.getMf() == 1) {
 					nextNumSeq ++;
@@ -145,15 +136,17 @@ public class FileHandler implements PacketHandler {
 			c.getChannelHandlerMap().get(imei).removeListener(channel);
 		}
 	}
-	
+
 	private void fillFile(short numSeq) throws IOException {
 		short num = numSeq;
-		while(tempData.containsKey(num+1)) {
-			fout.write(tempData.get(num+1));
-			tempData.remove(num+1);
-			num ++;
+		short nextNum = (short) (num + 1);
+		while(tempData.containsKey(nextNum)) {
+			fout.write(tempData.get(nextNum));
+			tempData.remove(nextNum);
+			num = nextNum;
+			nextNum = (short) (num + 1);
 		}
 		nextNumSeq = num;
 	}
-	
+
 }
