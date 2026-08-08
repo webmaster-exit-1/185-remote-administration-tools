@@ -24,10 +24,11 @@ import gui.UserGUI;
 import javax.swing.JPanel;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import javax.swing.BoxLayout;
-import javax.swing.JLabel; 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 
@@ -46,11 +47,11 @@ import javax.swing.ButtonGroup;
 import javax.swing.JSplitPane;
 
 public class MapPanel extends JPanel {
-	
+
 	private boolean streaming = false;
 	private JButton btnStopStreaming;
 	private UserGUI gui;
-	
+
 	private JRadioButton rdbtnNetwork;
 	private JRadioButton rdbtnGps;
 	private JLabel lblVallongitude;
@@ -60,7 +61,7 @@ public class MapPanel extends JPanel {
 	private JLabel lblValprecision;
 	private JLabel lblVallastdata;
 	private JMapViewer mapViewer;
-	
+
 	private double lastLongitude;
 	private double lastLatitude;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
@@ -69,10 +70,10 @@ public class MapPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public MapPanel(UserGUI gui) {
-		
+
 		this.gui = gui;
 		streaming = false;
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
@@ -89,23 +90,23 @@ public class MapPanel extends JPanel {
 					.addComponent(splitPane, GroupLayout.PREFERRED_SIZE, 545, Short.MAX_VALUE)
 					.addContainerGap())
 		);
-		
+
 		mapViewer = new JMapViewer();
 		splitPane.setLeftComponent(mapViewer);
-		
+
 		JPanel panel = new JPanel();
 		splitPane.setRightComponent(panel);
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Informations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JButton btnCenterView = new JButton("Center view");
 		btnCenterView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				centerMapView();
 			}
 		});
-		
+
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Start group", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout gl_panel = new GroupLayout(panel);
@@ -130,16 +131,16 @@ public class MapPanel extends JPanel {
 					.addComponent(btnCenterView)
 					.addGap(161))
 		);
-		
+
 		JLabel lblProvider = new JLabel("Location provider :");
-		
+
 		rdbtnNetwork = new JRadioButton("Network");
 		rdbtnNetwork.setSelected(true);
 		buttonGroup.add(rdbtnNetwork);
-		
+
 		rdbtnGps = new JRadioButton("GPS");
 		buttonGroup.add(rdbtnGps);
-		
+
 		btnStopStreaming = new JButton("Start streaming");
 		btnStopStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,29 +175,29 @@ public class MapPanel extends JPanel {
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		panel_2.setLayout(gl_panel_2);
-		
+
 		JLabel lblLongitude = new JLabel("Longitude :");
-		
+
 		lblVallongitude = new JLabel("val_longitude");
-		
+
 		JLabel lblLatitude = new JLabel("Latitude :");
-		
+
 		lblVallatitude = new JLabel("val_latitude");
-		
+
 		JLabel lblAltitude = new JLabel("Altitude :");
-		
+
 		lblValaltitude = new JLabel("val_altitude");
-		
+
 		JLabel lblVitesse = new JLabel("Speed :");
-		
+
 		lblValvitesse = new JLabel("val_vitesse");
-		
+
 		JLabel lblPrcision = new JLabel("Accuracy :");
-		
+
 		lblValprecision = new JLabel("val_precision");
-		
+
 		JLabel lblLastData = new JLabel("Last received data :");
-		
+
 		lblVallastdata = new JLabel("val_last_data");
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -262,11 +263,11 @@ public class MapPanel extends JPanel {
 		setLayout(groupLayout);
 
 	}
-	
+
 	private void centerMapView() {
-		 mapViewer.setDisplayPositionByLatLon(lastLatitude, lastLongitude, mapViewer.getZoom());
+		 mapViewer.setDisplayPosition(new Coordinate(lastLatitude, lastLongitude), mapViewer.getZoom());
 	}
-	
+
 	private void fireButtonStreaming() {
 		if(streaming) {
 			btnStopStreaming.setText("Start streaming");
@@ -281,17 +282,17 @@ public class MapPanel extends JPanel {
 			gui.fireStartGPSStreaming(provider);
 		}
 	}
-	
+
 	public void updateMap(double longitude, double latitude, double altitude, float speed, float accuracy) {
 		lastLatitude = latitude;
 		lastLongitude = longitude;
-		
+
 		MapMarkerDot marker = new MapMarkerDot(latitude, longitude);
 		List<MapMarker> markerList = new ArrayList<MapMarker>();
 		markerList.add(marker);
 		mapViewer.setMapMarkerList(markerList);
 		mapViewer.setMapMarkerVisible(true);
-		
+
 		lblVallongitude.setText(String.valueOf(longitude));
 		lblVallatitude.setText(String.valueOf(latitude));
 		lblValaltitude.setText(String.valueOf(altitude));
@@ -301,7 +302,7 @@ public class MapPanel extends JPanel {
 		Date date = new Date(System.currentTimeMillis());
 		lblVallastdata.setText(date.toString());
 	}
-	
+
 	public boolean getStreaming() {
 		return streaming;
 	}

@@ -41,7 +41,6 @@ import Packet.AdvancedInformationPacket;
 import javax.swing.JList;
 import javax.swing.JCheckBox;
 
-import sun.security.krb5.internal.crypto.CksumType;
 import javax.swing.JScrollPane;
 import java.awt.Component;
 import javax.swing.Box;
@@ -49,7 +48,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class HomePanel extends JPanel {
-	
+
 	private UserGUI gui;
 	private JTextField ipField;
 	private JTextField portField;
@@ -67,13 +66,13 @@ public class HomePanel extends JPanel {
 	 */
 	public HomePanel(UserGUI gui) {
 		this.gui = gui;
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Informations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Quick actions", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Client options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -100,36 +99,36 @@ public class HomePanel extends JPanel {
 							.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 142, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
-		
+
 		JLabel lblWhitephones = new JLabel("Phones :");
-		
+
 		JLabel lblWhitesms = new JLabel("SMS :");
-		
+
 		JLabel lblNeededKeyword = new JLabel("Needed keywords :");
-		
+
 		textField = new JTextField();
 		textField.setColumns(10);
-		
+
 		areaPhones = new JTextArea();
-		
+
 		areaSMS = new JTextArea();
-		
+
 		JLabel lblServerIp = new JLabel("Server IP :");
-		
+
 		ipField = new JTextField();
 		ipField.setHorizontalAlignment(SwingConstants.LEFT);
 		ipField.setText("192.168.0.10");
 		ipField.setColumns(10);
-		
+
 		JLabel lblServerPort = new JLabel("Server Port :");
-		
+
 		portField = new JTextField();
 		portField.setText("5555");
 		portField.setHorizontalAlignment(SwingConstants.LEFT);
 		portField.setColumns(10);
-		
+
 		chckbxWaitEventTo = new JCheckBox("Wait event to connect");
-		
+
 		JButton btnSaveConnectionInfo = new JButton("Save configuration");
 		btnSaveConnectionInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -207,9 +206,9 @@ public class HomePanel extends JPanel {
 					.addGap(31))
 		);
 		panel_2.setLayout(gl_panel_2);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
-		
+
 		JButton btnNewButton = new JButton("Refresh");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -237,14 +236,14 @@ public class HomePanel extends JPanel {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnNewButton))
 		);
-		
+
 		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		panel.setLayout(gl_panel);
-		
+
 		toastField = new JTextField();
 		toastField.setColumns(10);
-		
+
 		JButton btnToastIt = new JButton("Toast it");
 		btnToastIt.addMouseListener(new MouseAdapter() {
 			@Override
@@ -252,7 +251,7 @@ public class HomePanel extends JPanel {
 				fireButtonToast();
 			}
 		});
-		
+
 		JButton btnVibrate = new JButton("Vibrate");
 		btnVibrate.addMouseListener(new MouseAdapter() {
 			@Override
@@ -260,17 +259,17 @@ public class HomePanel extends JPanel {
 				fireButtonVibrate();
 			}
 		});
-		
+
 		durationField = new JTextField();
 		durationField.setColumns(10);
-		
+
 		JLabel lblDuration = new JLabel("Duration: ");
-		
+
 		JLabel lblOpenUrl = new JLabel("Open url:");
-		
+
 		urlField = new JTextField();
 		urlField.setColumns(10);
-		
+
 		JButton btnBrowseIt = new JButton("Browse it");
 		btnBrowseIt.addMouseListener(new MouseAdapter() {
 			@Override
@@ -328,67 +327,67 @@ public class HomePanel extends JPanel {
 		panel_1.setLayout(gl_panel_1);
 		setLayout(groupLayout);
 	}
-	
+
 	private void fireButtonSaveConnectionConfig() {
 		ArrayList<String> phones = new ArrayList<String>();
 		ArrayList<String> sms = new ArrayList<String>();
 		ArrayList<String> kw = new ArrayList<String>();
-		
+
 		for(String phone : areaPhones.getText().split("\n")) phones.add(phone);
-		for(String s : areaSMS.getText().split("\n")) sms.add(s); 
+		for(String s : areaSMS.getText().split("\n")) sms.add(s);
 		for(String key : textField.getText().split(" ")) kw.add(key);
-		
+
 		gui.fireSaveConnectConfigurations(ipField.getText(), Integer.valueOf(portField.getText()), chckbxWaitEventTo.isSelected(), phones, sms, kw);
 	}
-	
+
 	private void fireButtonToast() {
 		String mess = toastField.getText();
 		gui.getGUI().fireToastMessage(gui.getImei(), mess);
 	}
-	
+
 	private void fireButtonVibrate() {
 		String value = durationField.getText();
 		long l = Long.valueOf(value);
 		gui.getGUI().fireVibrate(gui.getImei(), l);
 	}
-	
+
 	private void fireButtonBrowse() {
 		gui.getGUI().fireBrowseUrl(gui.getImei(), urlField.getText());
 	}
-	
+
 	public void updatePreferences(String ip, int port, boolean wait, ArrayList<String> phones, ArrayList<String> sms, ArrayList<String> kw) {
 		String temp = "";
 		if(phones != null) {
 			for(String s : phones) temp += s + "\n";
 		}
 		areaPhones.setText(temp);
-		
+
 		temp = "";
 		if(sms != null) {
 			for(String s : sms) temp += s + "\n";
 		}
 		areaSMS.setText(temp);
-		
+
 		temp = "";
 		if(kw != null) {
 			for(String s : kw) temp += s+" ";
 			temp = temp.substring(0, temp.length() - 2);
 		}
 		textField.setText(temp);
-		
+
 		ipField.setText(ip);
 		portField.setText(""+port);
 		chckbxWaitEventTo.setSelected(wait);
 	}
-	
+
 	private void fireButtonRefreshAdv() {
 		textArea.setText("");
 		gui.fireGetAdvancedInformations();
 	}
-		
+
 	public void updateInformations(AdvancedInformationPacket packet) {
 		String txt = "";
-		
+
 		txt += " - General informations :\n";
 		txt += "Phone number = "+packet.getPhoneNumber()+"\n";
 		txt += "IMEI = "+packet.getIMEI()+"\n";
@@ -400,40 +399,40 @@ public class HomePanel extends JPanel {
 		txt += "SIM operator code = "+packet.getSimOperatorCode()+"\n";
 		txt += "SIM country ="+packet.getSimCountryCode()+"\n";
 		txt += "SIM serial ="+packet.getSimSerial()+"\n";
-		
+
 		txt += "\n ----------------------------\n\n";
-		
+
 		txt += " - Wifi informations :\n";
 		txt += "Is available = "+packet.isWifiAvailable()+"\n";
 		txt += "Connected / connecting = "+packet.isWifiConnectedOrConnecting()+"\n";
 		txt += "Extra info ="+packet.getWifiExtraInfos()+"\n";
 		txt += "Reason = "+packet.getWifiReason()+"\n";
-		
+
 		txt += "\n ----------------------------\n\n";
-		
+
 		txt += " - Mobile network informations :\n";
 		txt += "Name = "+packet.getMobileNetworkName()+"\n";
 		txt += "Is available = "+packet.isMobileNetworkAvailable()+"\n";
 		txt += "Connected / connecting = "+packet.isMobileNetworkConnectedOrConnecting()+"\n";
 		txt += "Extra info = "+packet.getMobileNetworkExtraInfos()+"\n";
 		txt += "Reason = "+packet.getMobileNetworkReason()+"\n";
-		
+
 		txt += "\n ----------------------------\n\n";
-		
+
 		txt += " - Android informations :\n";
 		txt += "Android version = "+packet.getAndroidVersion()+"\n";
 		txt += "SDK Android version = "+packet.getAndroidSdk()+"\n";
-		
+
 		txt += "\n ----------------------------\n\n";
-		
+
 		txt += " - Devices :\n";
 		txt += "Number of devices = "+packet.getSensors().size()+"\n";
 		for(String s : packet.getSensors()) {
 			txt += " --> "+s+"\n";
 		}
-		
+
 		txt += "\n ----------------------------\n\n";
-		
+
 		txt += " - Battery informations :\n";
 		txt += "Is present = "+packet.isBatteryPresent();
 		String[] health = {"", "unknown", "good", "overheat", "dead", "over voltage", "unspecified failure", "cold"};
@@ -450,7 +449,7 @@ public class HomePanel extends JPanel {
 		txt += "Technologie = "+packet.getBatteryTechnology()+"\n";
 		txt += "Temperature = "+packet.getBatteryTemperature()+"\n";
 		txt += "Voltage = "+packet.getBatteryVoltage()+"\n";
-		
+
 		textArea.setText(txt);
 	}
 }
