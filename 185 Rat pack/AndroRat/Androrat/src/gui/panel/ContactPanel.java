@@ -377,7 +377,6 @@ public class ContactPanel extends JPanel {
 	/*
 	public void updateContactList(ArrayList<Contact> contacts) {
 		contactMap = new HashMap<Integer, Contact>();
-		String[] values = new String[contacts.size()];
 		int ptr = 0;
 		for (Contact contact : contacts) {
 			if (contact.getDisplay_name() != null) {
@@ -401,7 +400,6 @@ public class ContactPanel extends JPanel {
 	public void updateContactList(ArrayList<Contact> contacts)
 	{
 		contactMap = new HashMap<Integer, Contact>();
-		String[] values = new String[contacts.size()];
 		int ptr = 0;
 		list.setCellRenderer(new ImageListCellRenderer());
 

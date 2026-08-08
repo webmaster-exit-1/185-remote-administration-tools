@@ -21,23 +21,18 @@ package gui.panel;
 
 import gui.UserGUI;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Vector;
-
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
@@ -58,7 +53,7 @@ public class FileTreePanel extends JPanel {
 	private JTree tree;
 	private DefaultMutableTreeNode trunk;
 	private DefaultTreeModel treeModel;
-	
+
 	private JLabel lblValname;
 	private JLabel lblValsize;
 	private JLabel lblValhidden;
@@ -148,11 +143,11 @@ public class FileTreePanel extends JPanel {
 		JLabel lblLastModification = new JLabel("Last modification :");
 
 		lblVallastmodif = new JLabel("val_last_modif");
-		
+
 		txtDir = new JTextField();
 		txtDir.setText("download/");
 		txtDir.setColumns(10);
-		
+
 		JLabel lblDownloadDirectory = new JLabel("Download directory :");
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
@@ -264,17 +259,17 @@ public class FileTreePanel extends JPanel {
 		}
 		*/
 		//dir = fileList.get(0).getFile();
-		
+
 		treeModel = new DefaultTreeModel(this.addNodes(null, fileList.get(0)));
 		tree.setModel(treeModel);
 		repaint();
 	}
-	
+
 	private DefaultMutableTreeNode addNodes(TreePath parentPath, MyFile cur) {
-		
+
 		DefaultMutableTreeNode curNode = new DefaultMutableTreeNode(cur.getName());
 		TreePath path = new TreePath(curNode.getPath());
-		
+
 		if(parentPath != null) {
 			parentPath = parentPath.pathByAddingChild(cur.getName());
 			fileMap.put(parentPath.toString(), cur);
@@ -282,13 +277,13 @@ public class FileTreePanel extends JPanel {
 			fileMap.put(path.toString(), cur);
 			parentPath = new TreePath(curNode.getPath());
 		}
-		
+
 		if(cur.getList() != null) {
 			for(MyFile child : cur.getList()) {
 				curNode.add(addNodes(parentPath, child));
 			}
 		}
-		
+
 		return curNode;
 	}
 
@@ -302,7 +297,7 @@ public class FileTreePanel extends JPanel {
 				String completePath = "";
 				for(int i = 0; i < sPath.length; i++) completePath += sPath[i]+"";
 				*/
-				
+
 				MyFile f = fileMap.get(path.toString());
 				if(f != null) {
 					selectedAbsolutePath = f.getPath();
@@ -310,7 +305,7 @@ public class FileTreePanel extends JPanel {
 					lblValname.setText(f.getName());
 					lblValhidden.setText(""+f.isHidden());
 					lblVallastmodif.setText(""+(new Date(f.getLastModif())));
-					
+
 					String sLength = "";
 					String temp = String.valueOf(f.getLength());
 					if(f.getLength() > 1024) sLength = String.valueOf(f.getLength()).substring(0, temp.length() - 3) + "Kb";
@@ -318,13 +313,13 @@ public class FileTreePanel extends JPanel {
 					else if(f.getLength() > 1024000000) sLength = String.valueOf(f.getLength()).substring(0, temp.length() - 9) + "Tb";
 					else sLength = temp + " bytes";
 					lblValsize.setText(sLength);
-					
+
 					String sAccess = "";
 					if(f.isR() && f.isW()) sAccess = "read & write";
 					else if(f.isR()) sAccess = "read";
 					else if(f.isW()) sAccess = "write";
 					lblValaccess.setText(sAccess);
-					
+
 					btnDownload.setEnabled(true);
 				} else {
 					System.out.println("MyFile null => anormal");
@@ -348,7 +343,7 @@ public class FileTreePanel extends JPanel {
 			}
 		}
 	}
-	
+
 	private void fireButtonDownload() {
 		gui.fireFileDownload(selectedAbsolutePath, txtDir.getText(), selectedName);
 	}
