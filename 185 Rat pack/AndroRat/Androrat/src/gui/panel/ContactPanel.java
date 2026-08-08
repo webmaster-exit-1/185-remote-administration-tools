@@ -55,7 +55,7 @@ import javax.swing.JSplitPane;
 
 public class ContactPanel extends JPanel {
 
-	private JList list;
+	private JList<JPanel> list;
 	private JLabel lblValId;
 	private JLabel lblValname;
 	private JLabel lblValnumber;
@@ -97,7 +97,7 @@ public class ContactPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 
-		list = new JList();
+		list = new JList<JPanel>();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -405,7 +405,7 @@ public class ContactPanel extends JPanel {
 		int ptr = 0;
 		list.setCellRenderer(new ImageListCellRenderer());
 
-		Object[] panels = new Object[contacts.size()];
+		JPanel[] panels = new JPanel[contacts.size()];
 
 		for (Contact contact : contacts)
 		{
@@ -453,7 +453,7 @@ public class ContactPanel extends JPanel {
 	}
 
 
-	class ImageListCellRenderer implements ListCellRenderer
+	class ImageListCellRenderer implements ListCellRenderer<JPanel>
 	{
 		/**
 		 * From http://java.sun.com/javase/6/docs/api/javax/swing/ListCellRenderer.html:
@@ -466,21 +466,13 @@ public class ContactPanel extends JPanel {
 		 * isSelected - true if the specified cell is currently selected cellHasFocus - true if the cell has focus
 		 */
 		@Override
-		public Component getListCellRendererComponent(JList jlist, Object value, int cellIndex, boolean isSelected, boolean cellHasFocus)
+		public Component getListCellRendererComponent(JList<? extends JPanel> jlist, JPanel value, int cellIndex, boolean isSelected, boolean cellHasFocus)
 		{
-			if (value instanceof JPanel)
-			{
-				Component component = (Component) value;
+			Component component = value;
 
-				component.setForeground(Color.white);
-				component.setBackground(isSelected ? Color.lightGray : Color.white);
-				return component;
-			} else
-			{
-				// TODO - I get one String here when the JList is first rendered; proper way to deal with this?
-				// System.out.println("Got something besides a JPanel: " + value.getClass().getCanonicalName());
-				return new JLabel("???");
-			}
+			component.setForeground(Color.white);
+			component.setBackground(isSelected ? Color.lightGray : Color.white);
+			return component;
 		}
 
 	}
