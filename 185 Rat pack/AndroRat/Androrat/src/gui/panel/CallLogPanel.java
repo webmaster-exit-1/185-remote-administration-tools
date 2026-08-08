@@ -47,19 +47,19 @@ import Packet.CallPacket;
 import javax.swing.JSplitPane;
 
 public class CallLogPanel extends JPanel {
-	
+
 	public static Color IN_CALL = new Color(14,92,7);
 	public static Color MISSED_IN_CALL = Color.red;
 	public static Color OUT_CALL = Color.blue;
-	
+
 	private JFormattedTextField formattedMinDate;
 	private JFormattedTextField formattedMaxDate;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	private ColorPane colorPane;
 	private JTextField phoneNumberField;
 	private JTextField minDurationField;
 	private JTextField maxDurationField;
-	
+
 	private UserGUI gui;
 
 	/**
@@ -67,18 +67,18 @@ public class CallLogPanel extends JPanel {
 	 */
 	public CallLogPanel(UserGUI gui) {
 		this.gui = gui;
-		
+
 		JLabel lblTypes = new JLabel("Types :");
-		
+
 		JLabel lblIncomingCall = new JLabel("received call");
 		lblIncomingCall.setForeground(IN_CALL);
-		
+
 		JLabel lblOutgoingCall = new JLabel("outgoing call");
 		lblOutgoingCall.setForeground(OUT_CALL);
-		
+
 		JLabel lblMissedIncomingCall = new JLabel("missed call");
 		lblMissedIncomingCall.setForeground(MISSED_IN_CALL);
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(1.0);
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -113,47 +113,47 @@ public class CallLogPanel extends JPanel {
 					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
 					.addContainerGap())
 		);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
-		
+
 		colorPane = new ColorPane();
 		scrollPane.setViewportView(colorPane);
-		
+
 		JPanel panel = new JPanel();
 		splitPane.setRightComponent(panel);
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Optional filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JLabel lblTypeOfCall = new JLabel("Type of call :");
-		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"All calls", "Received calls", "Sent calls", "Missed calls"}));
-		
+
+		comboBox = new JComboBox<String>();
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"All calls", "Received calls", "Sent calls", "Missed calls"}));
+
 		JLabel lblPhoneNumber = new JLabel("Phone number :");
-		
+
 		phoneNumberField = new JTextField();
 		phoneNumberField.setColumns(10);
-		
+
 		JLabel lblMinDate = new JLabel("Not before (dd/mm/yyyy)  :");
-		
+
 		formattedMinDate = new JFormattedTextField(createFormatter("**/**/****"));
-		
+
 		JLabel lblNotAfter = new JLabel("Not after");
-		
+
 		formattedMaxDate = new JFormattedTextField(createFormatter("**/**/****"));
-		
+
 		JLabel lblDuration = new JLabel("Min duration :");
-		
+
 		JLabel lblD = new JLabel("d >");
-		
+
 		minDurationField = new JTextField();
 		minDurationField.setColumns(10);
-		
+
 		JLabel lblD_1 = new JLabel("d <");
-		
+
 		maxDurationField = new JTextField();
 		maxDurationField.setColumns(10);
-		
+
 		JButton btnGetCallLogs = new JButton("Get call logs");
 		btnGetCallLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -223,7 +223,7 @@ public class CallLogPanel extends JPanel {
 		setLayout(groupLayout);
 
 	}
-	
+
 	protected MaskFormatter createFormatter(String s) {
 	    MaskFormatter formatter = null;
 	    try {
@@ -232,7 +232,7 @@ public class CallLogPanel extends JPanel {
 	    }
 	    return formatter;
 	}
-	
+
 	private void fireGetCallLogs() {
 		String request = "";
 		if(comboBox.getSelectedIndex() != 0) request += " type = "+comboBox.getSelectedIndex();
@@ -240,13 +240,12 @@ public class CallLogPanel extends JPanel {
 			if(request.equals("")) request += " number = '"+phoneNumberField.getText()+"'";
 			else request += " and number = '"+phoneNumberField.getText()+"'";
 		}
-		
+
 		if(formattedMinDate.getValue() != null) {
 			if(!formattedMinDate.getValue().equals("  /  /    ")) {
 				System.out.println("Valeur min date : "+formattedMinDate.getValue());
-				String[] res = ((String) formattedMinDate.getValue()).split("/");
 				//Date date = new Date(Integer.valueOf(res[0]), Integer.valueOf(res[1]), Integer.valueOf(res[2]));
-				
+
 				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 				Date date;
 				try {
@@ -256,15 +255,14 @@ public class CallLogPanel extends JPanel {
 				} catch (ParseException e) {
 					gui.errLogTxt(new Date().getTime(), "Bad format for minimum date");
 				}
-				
+
 			}
 		}
 		if(formattedMaxDate.getValue() != null) {
 			if(!formattedMaxDate.getValue().equals("  /  /    ")) {
 				System.out.println("Valeur min date : "+formattedMaxDate.getValue());
-				String[] res = ((String) formattedMaxDate.getValue()).split("/");
 				//Date date = new Date(Integer.valueOf(res[0]), Integer.valueOf(res[1]), Integer.valueOf(res[2]));
-				
+
 				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 				Date date;
 				try {
@@ -277,7 +275,7 @@ public class CallLogPanel extends JPanel {
 
 			}
 		}
-		
+
 		if(!minDurationField.getText().equalsIgnoreCase("")) {
 			if(request.equals("")) request += " duration > "+minDurationField.getText();
 			else request += " and duration > "+minDurationField.getText();
@@ -286,10 +284,10 @@ public class CallLogPanel extends JPanel {
 			if(request.equals("")) request += " duration < "+maxDurationField.getText();
 			else request += " and duration < "+maxDurationField.getText();
 		}
-		
+
 		gui.fireGetCallLogs(request);
 	}
-	
+
 	public void updateCallLogs(ArrayList<CallPacket> logsList) {
 		this.clearPanel();
 		for(CallPacket packet : logsList) {
@@ -307,17 +305,17 @@ public class CallLogPanel extends JPanel {
 			line += "\n\tDuration: " + packet.getDuration() + "s\n\t";
 			line += "Date: " + (new Date(packet.getDate())).toString();
 			line += "\n\n";
-			
+
 			if(packet.getType() == 1) colorPane.append(IN_CALL, line);
 			else if(packet.getType() == 2) colorPane.append(OUT_CALL, line);
 			else colorPane.append(MISSED_IN_CALL, line);
 		}
 	}
-	
+
 	public void addCall(String txt, Color color) {
 		colorPane.append(color, txt);
 	}
-	
+
 	public void clearPanel() {
 		colorPane.setText("");
 	}
