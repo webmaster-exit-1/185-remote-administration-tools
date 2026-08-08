@@ -22,8 +22,6 @@ package gui.panel;
 import gui.AdvContactGUI;
 import gui.UserGUI;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,7 +31,6 @@ import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -54,9 +51,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import javax.swing.JSplitPane;
 
 public class ContactPanel extends JPanel {
@@ -393,7 +387,7 @@ public class ContactPanel extends JPanel {
 				}
 				else{
 					values[ptr] = contact.getPhones().get(0) + " - "+ contact.getDisplay_name() + " (id:"+ contact.getId() + ")";
-					
+
 					JLabel lbl = new JLabel(contact.getPhones().get(0) + " - "+ contact.getDisplay_name() + " (id:"+ contact.getId() + ")");
 					lbl.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource("/gui/res/androrat_logo_32pix.png"))));
 				}
@@ -403,19 +397,19 @@ public class ContactPanel extends JPanel {
 
 		list.setListData(values);
 	}*/
-	
+
 	public void updateContactList(ArrayList<Contact> contacts)
 	{
 		contactMap = new HashMap<Integer, Contact>();
 		String[] values = new String[contacts.size()];
 		int ptr = 0;
 		list.setCellRenderer(new ImageListCellRenderer());
-		
+
 		Object[] panels = new Object[contacts.size()];
-		
+
 		for (Contact contact : contacts)
 		{
-			if (contact.getDisplay_name() != null) 
+			if (contact.getDisplay_name() != null)
 			{
 				contactMap.put(ptr, contact);
 				byte[] im = contact.getPhoto();
@@ -423,51 +417,51 @@ public class ContactPanel extends JPanel {
 				if(im == null) {
 					ImageIcon getImg = new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource("/gui/res/People.png")));
 					Image img = getImg.getImage();
-					Image newimg = img.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH);  
-					imgResize = new ImageIcon(newimg);  
+					Image newimg = img.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH);
+					imgResize = new ImageIcon(newimg);
 				}
 				else {
 					ImageIcon getImg = new ImageIcon(contact.getPhoto());
 					Image img = getImg.getImage();
-					Image newimg = img.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH);  
-					imgResize = new ImageIcon(newimg); 
+					Image newimg = img.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH);
+					imgResize = new ImageIcon(newimg);
 				}
 
-				
-				if (contact.getPhones() == null) 
-				{ 
+
+				if (contact.getPhones() == null)
+				{
 					JLabel imgLabel = new JLabel("no phone - " + contact.getDisplay_name() + " (id:" + contact.getId() + ")", imgResize, SwingConstants.LEFT);
 					JPanel imgPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 					imgPanel.add(imgLabel);
-					
+
 					panels[ptr] = imgPanel;
 				}
 				else
-				{  				
+				{
 					JLabel imgLabel = new JLabel(contact.getPhones().get(0) + " - "+ contact.getDisplay_name() + " (id:"+ contact.getId() + ")", imgResize, SwingConstants.LEFT);
 					JPanel imgPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 					imgPanel.add(imgLabel);
-					
+
 					panels[ptr] = imgPanel;
 				}
 				ptr++;
 			}
 		}
-		
+
 		list.setListData(panels);
-		
+
 	}
-	
+
 
 	class ImageListCellRenderer implements ListCellRenderer
 	{
 		/**
 		 * From http://java.sun.com/javase/6/docs/api/javax/swing/ListCellRenderer.html:
-		 * 
+		 *
 		 * Return a component that has been configured to display the specified value. That component's paint method is then called to "render"
 		 * the cell. If it is necessary to compute the dimensions of a list because the list cells do not have a fixed size, this method is
 		 * called to generate a component on which getPreferredSize can be invoked.
-		 * 
+		 *
 		 * jlist - the jlist we're painting value - the value returned by list.getModel().getElementAt(index). cellIndex - the cell index
 		 * isSelected - true if the specified cell is currently selected cellHasFocus - true if the cell has focus
 		 */
@@ -477,7 +471,7 @@ public class ContactPanel extends JPanel {
 			if (value instanceof JPanel)
 			{
 				Component component = (Component) value;
-				
+
 				component.setForeground(Color.white);
 				component.setBackground(isSelected ? Color.lightGray : Color.white);
 				return component;
@@ -490,5 +484,5 @@ public class ContactPanel extends JPanel {
 		}
 
 	}
-	
+
 }
