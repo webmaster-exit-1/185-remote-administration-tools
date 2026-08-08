@@ -251,7 +251,6 @@ public class SMSLogPanel extends JPanel {
 		if(formattedMaxDate.getValue() != null) {
 			if(!formattedMaxDate.getValue().equals("  /  /    ")) {
 				System.out.println("Valeur min date : "+formattedMaxDate.getValue());
-				String[] res = ((String) formattedMaxDate.getValue()).split("/");
 				//Date date = new Date(Integer.valueOf(res[0]), Integer.valueOf(res[1]), Integer.valueOf(res[2]));
 
 				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

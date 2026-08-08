@@ -21,11 +21,6 @@ package gui.panel;
 
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
-
 import gui.UserGUI;
 
 
@@ -33,18 +28,10 @@ import javax.swing.JPanel;
 
 
 import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JButton;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
@@ -107,9 +94,8 @@ public class VideoPanel extends JPanel
 	private JPanel videoPane;
 	private Canvas videoCanvas;
 	private JPanel controlsPane;
-	private JPanel allPanel ;
 	private JLabel standardAspectLabel;
-	private JComboBox standardAspectComboBox;
+	private JComboBox<String[]> standardAspectComboBox;
 	private JLabel lblStart;
 	private JLabel lblPause;
 	private JLabel lblStop;
@@ -130,49 +116,49 @@ public class VideoPanel extends JPanel
 		this.gui = gui ;
 		factory = new MediaPlayerFactory("--no-video-title-show");
 	    mediaPlayer = factory.newEmbeddedMediaPlayer();
-	    
+
 	    videoPane = new JPanel();
 	    videoPane.setBorder(new CompoundBorder(new LineBorder(Color.black, 1), new EmptyBorder(0, 0, 0, 0)));
 	    videoPane.setLayout(new BorderLayout());
 	    videoPane.setBackground(Color.white);
-	    
+
 	    videoCanvas = new Canvas();
 	    videoCanvas.setBackground(Color.white);
 	    videoCanvas.setSize(720, 350);
 
 
 	    videoPane.add(videoCanvas, BorderLayout.CENTER);
-	    
+
 	    videoSurface = factory.newVideoSurface(videoCanvas);
-	    
+
 	    mediaPlayer.setVideoSurface(videoSurface);
-	    
+
 	    standardAspectLabel = new JLabel("Standard Aspect:");
 	    standardAspectLabel.setDisplayedMnemonic('s');
-	    
-	    standardAspectComboBox = new JComboBox(ASPECTS);
+
+	    standardAspectComboBox = new JComboBox<String[]>(ASPECTS);
 	    standardAspectComboBox.setEditable(false);
 	    standardAspectComboBox.setRenderer(new DefaultListCellRenderer() {
 	      @Override
-	      public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 	        JLabel l = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 	        String[] val = (String[])value;
 	        l.setText(val[0]);
 	        return l;
 	      }
 	    });
-	   
+
 	    standardAspectLabel.setLabelFor(standardAspectComboBox);
-	    
+
 		lblPause = new JLabel(reziseImage(("/gui/res/gtk-media-pause.png")));
-	    
+
 		lblStart = new JLabel(reziseImage("/gui/res/gtk-media-play-ltr.png"));
-		
-		
+
+
 		lblStop = new JLabel(reziseImage("/gui/res/gtk-media-stop.png"));
 		lblStop.setEnabled(false);
 		 btnStartStream = new JButton("Start stream");
-		
+
 	    controlsPane = new JPanel();
 	    controlsPane.setLayout(new BoxLayout(controlsPane, BoxLayout.X_AXIS));
 	    controlsPane.add(standardAspectLabel);
@@ -185,8 +171,8 @@ public class VideoPanel extends JPanel
 	    controlsPane.add(lblStop);
 	    controlsPane.add(Box.createHorizontalStrut(4));
 	    controlsPane.add(lblPause);
-	 
-	    
+
+
 	    contentPane = new JPanel();
 	    contentPane.setBorder(new EmptyBorder(16, 16, 16, 16));
 	    contentPane.setLayout(new BorderLayout(16, 16));
@@ -196,22 +182,22 @@ public class VideoPanel extends JPanel
 	    frame = new JFrame("Video streaming");
 	    frame.setContentPane(contentPane);
 	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	    
+
 	    frame.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
-	    
+
 	    frame.pack();
 	    frame.setVisible(true);
 	    //*/
 	    //mediaPlayer.playMedia("tbbt.mp4");
-	    
+
 //	    contentPane.setVisible(true);
 	    //allPanel.add(frame);
 	  //  gui.add(allPanel);
-	    
+
 	    standardAspectComboBox.addActionListener(new ActionListener() {
 	      @Override
 	      public void actionPerformed(ActionEvent e) {
@@ -228,25 +214,25 @@ public class VideoPanel extends JPanel
                     fireButtonStartStreaming();
             }
 	    });
-	    
+
 	    lblStart.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
 				fireButtonPlay();
 			}
 		});
-	    
+
 	    lblStop.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
 				fireButtonPlay();
 			}
 		});
-	    
+
 	    lblPause.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
 				mediaPlayer.pause();
 			}
 		});
-	    
+
 	}
 
 	private void formWindowClosed(java.awt.event.WindowEvent evt){
@@ -254,7 +240,7 @@ public class VideoPanel extends JPanel
 		frame = null;
 		gui.fireButtonCloseTab();
 	}
-	
+
 	/*
 	 * mediaPlayer = new EmbeddedMediaPlayerComponent(); scrollPane.setViewportView(mediaPlayer); setLayout(groupLayout);
 	 */
@@ -262,8 +248,8 @@ public class VideoPanel extends JPanel
 	{
 		ImageIcon getImg = new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource(path)));
 		Image img = getImg.getImage();
-		Image newimg = img.getScaledInstance(32, 32,  java.awt.Image.SCALE_SMOOTH);  
-		return new ImageIcon(newimg); 
+		Image newimg = img.getScaledInstance(32, 32,  java.awt.Image.SCALE_SMOOTH);
+		return new ImageIcon(newimg);
 	}
 	public boolean getStreaming()
 	{
@@ -291,8 +277,8 @@ public class VideoPanel extends JPanel
 			streaming = false;
 		}
 	}
-	
- 
+
+
 	public void fireButtonPlay() {
 		if(!playing) {
 			mediaPlayer.playMedia(filename);
@@ -307,7 +293,7 @@ public class VideoPanel extends JPanel
 			playing = false;
 		}
 	}
-	
+
 
 	public void addVideoBytes(byte[] data)
 	{

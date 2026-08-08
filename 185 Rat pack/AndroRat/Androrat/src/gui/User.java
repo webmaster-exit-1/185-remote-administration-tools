@@ -19,11 +19,9 @@
 */
 package gui;
 
-import javax.swing.ImageIcon;
-
 /*
 public class User {
-    
+
     private String imei;
     private String countryCode;
     private String telNumber;
@@ -31,7 +29,7 @@ public class User {
     private String simCountryCode;
     private String simOperator;
     private String simSerial;
-    
+
     public User(String i, String cc, String tn, String op, String simcc, String simop, String simserial) {
         imei = i;
         countryCode = cc;
@@ -44,7 +42,7 @@ public class User {
 */
 
 public class User {
-    
+
     private String imei;
     private String countryCode;
     private String telNumber;
@@ -53,7 +51,7 @@ public class User {
     private String simOperator;
     private String simSerial;
     private String image;
-    
+
     public User(String img, String i, String cc, String tn, String op, String simcc, String simop, String simserial) {
     	image = img ;
         imei = i;
@@ -64,7 +62,7 @@ public class User {
         simOperator = simop;
         simSerial = simserial;
     }
-    
+
 	public String getImage()
 	{
 		return image;
@@ -130,5 +128,5 @@ public class User {
     public String getTelNumber() {
         return telNumber;
     }
-    
+
 }

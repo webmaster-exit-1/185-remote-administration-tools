@@ -28,52 +28,44 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.TitledBorder;
-import javax.swing.JButton;
-
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class SoundPanel extends JPanel {
-	
+
 	private UserGUI gui;
 	private SourceDataLine dataLine;
 	private boolean streaming;
 	private JLabel lblCaptureSource;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	private boolean mute = false ;
 	private boolean isRecording = false;
-	
+
 	private JLabel lblMute ;
 	private JLabel lblStop ;
 	private JLabel lblStart ;
 	private JLabel lblImage ;
 	private JLabel lblSave ;
-	
+
 	private String nomRecord ;
 	private FileOutputStream record;
-	
+
 
 	/**
 	 * Create the panel.
@@ -81,10 +73,10 @@ public class SoundPanel extends JPanel {
 	public SoundPanel(UserGUI gui) {
 		streaming = false;
 		this.gui = gui;
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Streaming options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Informations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -106,23 +98,23 @@ public class SoundPanel extends JPanel {
 					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(26, Short.MAX_VALUE))
 		);
-		
+
 		JLabel lblSampleRate = new JLabel("Sample rate : ");
-		
+
 		JLabel lblSampleSizeBits = new JLabel("Sample size bits :");
-		
+
 		JLabel lblChannels = new JLabel("Channels :");
-		
+
 		JLabel lblSigned = new JLabel("Signed :");
-		
+
 		JLabel lblValrate = new JLabel("val_rate");
-		
+
 		JLabel lblValsizebits = new JLabel("val_sizebits");
-		
+
 		JLabel lblValchannels = new JLabel("val_channels");
-		
+
 		JLabel lblValsigned = new JLabel("val_signed");
-		
+
 		JPanel panel_image = new JPanel();
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -174,10 +166,10 @@ public class SoundPanel extends JPanel {
 						.addComponent(panel_image, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
-		
+
 		ImageIcon getImg = new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource("/gui/res/note.bmp")));
 		Image img = getImg.getImage();
-		Image newimg = img.getScaledInstance(250, 111,  java.awt.Image.SCALE_SMOOTH);  
+		Image newimg = img.getScaledInstance(250, 111,  java.awt.Image.SCALE_SMOOTH);
 		lblImage = new JLabel(new ImageIcon(newimg));
 		lblImage.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
@@ -189,12 +181,12 @@ public class SoundPanel extends JPanel {
 		panel_image.add(lblImage);
 		panel_1.setLayout(gl_panel_1);
 		setLayout(groupLayout);
-		
+
 		lblCaptureSource = new JLabel("Capture source :");
-		
-		Object[] items = {"Microphone", "Voice call (up & down)", "Up voice call", "Down voice call"};
-		comboBox = new JComboBox(items);
-		
+
+		String[] items = {"Microphone", "Voice call (up & down)", "Up voice call", "Down voice call"};
+		comboBox = new JComboBox<String>(items);
+
 		getImg = reziseImage("/gui/res/gtk-media-play-ltr.png");
 		lblStart = new JLabel(getImg);
 		lblStart.addMouseListener(new MouseAdapter() {
@@ -203,7 +195,7 @@ public class SoundPanel extends JPanel {
 				fireButtonStartStream();
 			}
 		});
-		
+
 		getImg = reziseImage("/gui/res/gtk-media-stop.png");
 		lblStop = new JLabel(getImg);
 		lblStop.setEnabled(false);
@@ -213,7 +205,7 @@ public class SoundPanel extends JPanel {
 				fireButtonStopStream();
 			}
 		});
-		
+
 		getImg = reziseImage("/gui/res/sound.png");
 		lblMute = new JLabel(getImg);
 		lblMute.addMouseListener(new MouseAdapter() {
@@ -222,7 +214,7 @@ public class SoundPanel extends JPanel {
 				fireButtonMute();
 			}
 		});
-		
+
 		getImg = reziseImage("/gui/res/gtk-media-record.png");
 		lblSave = new JLabel(getImg);
 		lblSave.addMouseListener(new MouseAdapter() {
@@ -231,7 +223,7 @@ public class SoundPanel extends JPanel {
 				fireButtonRecord();
 			}
 		});
-		
+
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -266,7 +258,7 @@ public class SoundPanel extends JPanel {
 					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		panel.setLayout(gl_panel);
-		
+
 		AudioFormat format = new AudioFormat(11025, 16, 1, true, false);
 		try {
 			dataLine = AudioSystem.getSourceDataLine(format);
@@ -279,13 +271,13 @@ public class SoundPanel extends JPanel {
 		lblValsigned.setText("true");
 		lblValsizebits.setText("16");
 	}
-	
+
 	private ImageIcon reziseImage(String path)
 	{
 		ImageIcon getImg = new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource(path)));
 		Image img = getImg.getImage();
-		Image newimg = img.getScaledInstance(32, 32,  java.awt.Image.SCALE_SMOOTH);  
-		return new ImageIcon(newimg); 
+		Image newimg = img.getScaledInstance(32, 32,  java.awt.Image.SCALE_SMOOTH);
+		return new ImageIcon(newimg);
 	}
 
 	private void fireButtonStartStream() {
@@ -294,21 +286,21 @@ public class SoundPanel extends JPanel {
 		if(comboBox.getSelectedItem().equals("Voice call (up & down)")) choice = Protocol.ARG_STREAM_AUDIO_UPDOWN_CALL;
 		else if(comboBox.getSelectedItem().equals("Up voice call")) choice = Protocol.ARG_STREAM_AUDIO_UP_CALL;
 		else if(comboBox.getSelectedItem().equals("Down voice call")) choice = Protocol.ARG_STREAM_AUDIO_DOWN_CALL;
-		
+
 		//System.out.println("Envoi demande enregistrement, choix : "+((String)comboBox.getSelectedItem())+ " num="+choice);
 		lblStart.setEnabled(false);
 		lblStop.setEnabled(true);
 		gui.fireStartSoundStreaming(choice);
 		dataLine.start();
 	}
-	
+
 	private void fireButtonStopStream() {
 		streaming = false;
 		lblStart.setEnabled(true);
 		lblStop.setEnabled(false);
 		gui.fireStopSoundStreaming();
 	}
-	
+
 	private void fireButtonMute() {
 		if(mute)
 		{
@@ -326,7 +318,7 @@ public class SoundPanel extends JPanel {
 			lblMute.validate();
 		}
 	}
-	
+
 	private void fireButtonRecord()
 	{
 		if(isRecording)
@@ -346,7 +338,7 @@ public class SoundPanel extends JPanel {
 				//le fichier temporaire est supprim�
 				File f = new File(nomRecord+".pcm");
 				f.delete();
-				
+
 				record.close();
 				record = null;
 				nomRecord = null ;
@@ -361,16 +353,16 @@ public class SoundPanel extends JPanel {
 			ImageIcon getImg = reziseImage("/gui/res/gtk-media-stop.png");
 			lblSave.setIcon(getImg);
 			lblSave.validate();
-			
-			String format = "dd_MM_yy_H_mm_ss"; 
-			java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat( format ); 
+
+			String format = "dd_MM_yy_H_mm_ss";
+			java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat( format );
 			java.util.Date date = new java.util.Date();
 			nomRecord = "recordedSong_"+formater.format(date) ;
 			try
 			{
 				//cr�ation du fichier temporaire qui va stocker l'audio jou� tant que record est on
 				record = new FileOutputStream(nomRecord+".pcm");
-				record.write("".getBytes()); 
+				record.write("".getBytes());
 				record = new FileOutputStream(nomRecord+".pcm",true);
 				addSoundBytes("ma".getBytes());
 			} catch (FileNotFoundException e)
@@ -378,12 +370,11 @@ public class SoundPanel extends JPanel {
 				e.printStackTrace();
 			} catch (IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	public void changeLblImage()
 	{
 		ImageIcon getImg = new ImageIcon(Toolkit.getDefaultToolkit().getImage(UserGUI.class.getResource("/gui/res/Jesus.jpeg")));
@@ -391,7 +382,7 @@ public class SoundPanel extends JPanel {
 		Image newimg = img.getScaledInstance(250, 111,  java.awt.Image.SCALE_SMOOTH);
 		lblImage.setIcon(new ImageIcon(newimg));
 	}
-	
+
 	public void addSoundBytes(byte[] data) {
 		if (!mute)
 			dataLine.write(data, 0, data.length);
@@ -404,11 +395,11 @@ public class SoundPanel extends JPanel {
 			{
 				e.printStackTrace();
 			}
-		}		
+		}
 	}
-	
-	
-	
+
+
+
 	public boolean getStreaming() {
 		return streaming;
 	}

@@ -22,7 +22,6 @@ package handler;
 import server.Server;
 import Packet.CallLogPacket;
 import Packet.Packet;
-import Packet.RawPacket;
 import gui.GUI;
 
 public class CallLogHandler implements PacketHandler {
@@ -30,7 +29,7 @@ public class CallLogHandler implements PacketHandler {
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public CallLogHandler(int chan, String imei, GUI gui) {
 		channel = chan;
 		this.imei = imei;
@@ -39,7 +38,8 @@ public class CallLogHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
+		// Call log packets are processed by handlePacket, which has access to the
+		// server channel and can unregister this handler after processing.
 	}
 
 	@Override
