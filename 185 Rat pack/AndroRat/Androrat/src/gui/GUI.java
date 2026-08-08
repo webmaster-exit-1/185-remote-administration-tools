@@ -414,7 +414,6 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void saveSMSChannel(String imei, int channel) {
-        // TODO
     }
 
     // *******************************

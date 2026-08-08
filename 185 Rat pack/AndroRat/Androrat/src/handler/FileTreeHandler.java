@@ -38,7 +38,6 @@ public class FileTreeHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

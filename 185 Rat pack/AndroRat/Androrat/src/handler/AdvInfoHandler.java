@@ -29,7 +29,7 @@ public class AdvInfoHandler implements PacketHandler {
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public AdvInfoHandler(int chan, String imei, GUI gui) {
 		channel = chan;
 		this.imei = imei;
@@ -38,7 +38,6 @@ public class AdvInfoHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

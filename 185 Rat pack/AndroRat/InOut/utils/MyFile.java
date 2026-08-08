@@ -17,9 +17,9 @@ import java.util.ArrayList;
 		public boolean hidden;
 		public String path;
 		//private File file;
-		
+
 		public ArrayList<MyFile> list;
-		
+
 		public MyFile(File f) {
 			name = f.getName();
 			length = f.length();
@@ -38,11 +38,11 @@ import java.util.ArrayList;
 		public ArrayList<MyFile> getList() {
 			return list;
 		}
-		
+
 		public void addChild(MyFile c) {
 			list.add(c);
 		}
-		
+
 		public boolean isFile() {
 			return isFile;
 		}
@@ -120,12 +120,10 @@ import java.util.ArrayList;
 		}
 	*/
 		public byte[] build() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		public void parse(byte[] packet) {
-			// TODO Auto-generated method stub
-			
+
 		}
 	}

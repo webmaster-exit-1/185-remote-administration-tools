@@ -25,11 +25,11 @@ import Packet.Packet;
 import gui.GUI;
 
 public class ContactsHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public ContactsHandler(int chan, String imei, GUI gui) {
 		channel = chan;
 		this.imei = imei;
@@ -38,7 +38,6 @@ public class ContactsHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

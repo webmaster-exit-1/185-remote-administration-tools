@@ -158,7 +158,7 @@ a trimmed down version that most wav files adhere to.
 
 			//System.out.println("Reading wav file...\n"); // for debugging only
 
-			String chunkID = "" + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte();
+			inFile.skipBytes(4); // read the chunk identifier
 
 			inFile.read(tmpLong); // read the ChunkSize
 			myChunkSize = byteArrayToLong(tmpLong);
@@ -301,7 +301,6 @@ a trimmed down version that most wav files adhere to.
 			outFile.writeInt(Integer.reverseBytes((int)myDataSize));		// 40 - how big is this data chunk
 			outFile.write(myData);											// 44 - the actual data itself - just a long string of numbers
 		}
-		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
@@ -378,7 +377,10 @@ a trimmed down version that most wav files adhere to.
 	// convert a short to a byte array
 	public static byte[] shortToByteArray(short data)
 	{
-		return new byte[]{(byte)(data & 0xff),(byte)((data >>> 8) & 0xff)};
+		byte[] bytes = new byte[2];
+		bytes[0] = (byte) (data & 0xff);
+		bytes[1] = (byte) ((data >>> 8) & 0xff);
+		return bytes;
 	}
 
 }

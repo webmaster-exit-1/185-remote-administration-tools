@@ -20,22 +20,21 @@
 package handler;
 
 import server.Server;
-import Packet.CallStatusPacket;
 import Packet.Packet;
 import Packet.ShortSMSPacket;
 import gui.GUI;
 
 public class SMSMonitorHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public SMSMonitorHandler()
 	{
-		
+
 	}
-	
+
 	public SMSMonitorHandler(int channel, String imei, GUI gui) {
 		this.gui = gui;
 		this.channel = channel;
@@ -44,7 +43,6 @@ public class SMSMonitorHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

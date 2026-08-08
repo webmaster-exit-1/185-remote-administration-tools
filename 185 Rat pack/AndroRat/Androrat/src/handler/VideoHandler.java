@@ -29,17 +29,16 @@ public class VideoHandler implements PacketHandler {
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public VideoHandler(int channel, String imei, GUI gui) {
 		this.gui = gui;
 		this.channel = channel;
 		this.imei = imei;
 	}
-	
+
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

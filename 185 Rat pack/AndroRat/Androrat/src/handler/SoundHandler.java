@@ -25,11 +25,11 @@ import Packet.Packet;
 import Packet.RawPacket;
 
 public class SoundHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public SoundHandler(int channel, String imei, GUI gui) {
 		this.gui = gui;
 		this.channel = channel;
@@ -38,7 +38,6 @@ public class SoundHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
