@@ -19,11 +19,8 @@
 */
 package handler;
 
-import java.util.ArrayList;
-
 import server.Server;
 import Packet.Packet;
-import Packet.SMSPacket;
 import Packet.SMSTreePacket;
 import gui.GUI;
 
@@ -32,7 +29,7 @@ public class SMSHandler implements PacketHandler {
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public SMSHandler(int chan, String imei, GUI gui) {
 		channel = chan;
 		this.imei = imei;

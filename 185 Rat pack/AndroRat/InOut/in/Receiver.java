@@ -5,10 +5,6 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import inout.Protocol;
 
 public class Receiver {
@@ -31,18 +27,18 @@ public class Receiver {
 
 		n = is.read(received_data);
 
-		buffer.clear();		
+		buffer.clear();
 		buffer = ByteBuffer.wrap(received_data, 0, n);
 		//System.out.println("data has been read:" + buffer.limit());
 
 		return buffer;
 	}
-	
+
 	public ByteBuffer read(ByteBuffer b) throws IOException, SocketException {
 		int n = 0;
-		
+
 		byte[] theRest = null;
-		
+
 		if(b.position()>0 && b.position()<Protocol.HEADER_LENGTH_DATA)
 		{
 			theRest = new byte[b.position()];
@@ -51,16 +47,16 @@ public class Receiver {
 			System.arraycopy(theRest, 0, received_data, 0, theRest.length);
 			//for(int i = 0; i<theRest.length;i++)
 			//	received_data[i] = theRest[i];
-			
+
 			//System.out.println("theRest len = "+theRest.length);
 			n = is.read(received_data,theRest.length,Protocol.MAX_PACKET_SIZE-theRest.length);
 			n+=theRest.length;
 		  }
 		else
 			n = is.read(received_data);
-		
-		
-		//buffer.clear();		
+
+
+		//buffer.clear();
 		buffer = ByteBuffer.wrap(received_data, 0, n);
 		//System.out.println("data has been read:" + n);
 

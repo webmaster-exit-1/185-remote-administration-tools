@@ -22,7 +22,8 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public static HashMap<String, String> decodeHashMap(byte[] data) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(data);
 		ObjectInputStream in;
@@ -33,7 +34,7 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
 	public static byte[] encodeArrayList(ArrayList<String> l) {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -44,7 +45,8 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public static ArrayList<String> decodeArrayList(byte[] data) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(data);
 		ObjectInputStream in;
@@ -55,7 +57,7 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
 	public static byte[] encodeHashSet(HashSet<String> l) {
 		if(l == null)
 			return null;
@@ -68,7 +70,8 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public static HashSet<String> decodeHashSet(byte[] data) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(data);
 		ObjectInputStream in;
@@ -79,7 +82,7 @@ public class EncoderHelper {
 			return null;
 		}
 	}
-	
+
 	public static byte[] encodeLong(long l) {
 		ByteBuffer b = ByteBuffer.allocate(8);
 		b.putLong(l);

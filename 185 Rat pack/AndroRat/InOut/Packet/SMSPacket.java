@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 
 public class SMSPacket implements Packet, Serializable{
 
 
 	private static final long serialVersionUID = 6169284240601506961L;
-	
+
 	private int id;
 	private int thread_id;
 	//private int address_size;
@@ -23,11 +22,11 @@ public class SMSPacket implements Packet, Serializable{
 	private int type;
 	//private int body_size;
 	private String body;
-	
+
 	public SMSPacket() {
-		
+
 	}
-	
+
 	public SMSPacket(int id, int thid, String ad, int pers, long dat, int read, String body, int type) {
 		this.id = id;
 		this.thread_id = thid;
@@ -40,10 +39,10 @@ public class SMSPacket implements Packet, Serializable{
 		//this.body_size = this.body.length();
 		this.type = type;
 	}
-	
+
 	/*
 	public byte[] build() {
-		
+
 		ByteBuffer b = ByteBuffer.allocate(4*6+8+address_size+body_size);
 		b.putInt(id);
 		b.putInt(thread_id);
@@ -56,7 +55,7 @@ public class SMSPacket implements Packet, Serializable{
 		b.putInt(body_size);
 		b.put(body.getBytes());
 		return b.array();
-		
+
 	}
 
 	public void parse(byte[] packet) {
@@ -77,8 +76,8 @@ public class SMSPacket implements Packet, Serializable{
 		this.body = new String(tmp);
 	}
 	*/
-	
-	
+
+
 	public byte[] build() {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -108,15 +107,15 @@ public class SMSPacket implements Packet, Serializable{
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public int getType() {
 		return type;
 	}
-	
+
 	public void setType(int t) {
 		this.type =t;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -132,7 +131,7 @@ public class SMSPacket implements Packet, Serializable{
 	public int getPerson() {
 		return person;
 	}
-	
+
 	public long getDate() {
 		return date;
 	}

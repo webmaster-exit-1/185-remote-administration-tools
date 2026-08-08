@@ -14,13 +14,13 @@ public class ContactsPacket implements Packet{
 	ArrayList<Contact> list;
 
 	public ContactsPacket() {
-		
+
 	}
-	
+
 	public ContactsPacket(ArrayList<Contact> ar) {
 		list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -32,6 +32,7 @@ public class ContactsPacket implements Packet{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void parse(byte[] packet) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
@@ -41,7 +42,7 @@ public class ContactsPacket implements Packet{
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public ArrayList<Contact> getList() {
 		return list;
 	}

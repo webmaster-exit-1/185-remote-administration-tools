@@ -5,7 +5,7 @@ package utils;
 // www.thisisnotalabel.com
 
 // Example Wav file input and output
-// this was written for educational purposes, but feel free to use it for anything you like 
+// this was written for educational purposes, but feel free to use it for anything you like
 // as long as you credit me appropriately ("wav IO based on code by Evan Merz")
 
 // if you catch any bugs in this, or improve upon it significantly, send me the changes
@@ -14,12 +14,11 @@ package utils;
 /*
  * http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
  * http://www.sonicspot.com/guide/wavefiles.html
- * 
+ *
  */
 
 
 import java.io.*;
-import java.util.*;
 
 public class wavIO
 {
@@ -31,8 +30,8 @@ public class wavIO
                                    (0x52494646 big-endian form).
     4         4   ChunkSize        36 + SubChunk2Size, or more precisely:
                                    4 + (8 + SubChunk1Size) + (8 + SubChunk2Size)
-                                   This is the size of the rest of the chunk 
-                                   following this number.  This is the size of the 
+                                   This is the size of the rest of the chunk
+                                   following this number.  This is the size of the
                                    entire file in bytes minus 8 bytes for the
                                    two fields not included in this count:
                                    ChunkID and ChunkSize.
@@ -46,7 +45,7 @@ public class wavIO
     16        4   Subchunk1Size    16 for PCM.  This is the size of the
                                    rest of the Subchunk which follows this number.
     20        2   AudioFormat      PCM = 1 (i.e. Linear quantization)
-                                   Values other than 1 indicate some 
+                                   Values other than 1 indicate some
                                    form of compression.
     22        2   NumChannels      Mono = 1, Stereo = 2, etc.
     24        4   SampleRate       8000, 44100, etc.
@@ -63,7 +62,7 @@ public class wavIO
     40        4   Subchunk2Size    == NumSamples * NumChannels * BitsPerSample/8
                                    This is the number of bytes in the data.
                                    You can also think of this as the size
-                                   of the read of the subchunk following this 
+                                   of the read of the subchunk following this
                                    number.
     44        *   Data             The actual sound data.
 
@@ -105,7 +104,7 @@ a trimmed down version that most wav files adhere to.
 	private int myBlockAlign;
 	private int myBitsPerSample;
 	private long myDataSize;
-		
+
 	// I made this public so that you can toss whatever you want in here
 	// maybe a recorded buffer, maybe just whatever you want
 	public byte[] myData;
@@ -142,7 +141,7 @@ a trimmed down version that most wav files adhere to.
 			inFile.close();
 		}
 		catch(Exception e) {
-			
+
 		}
 	}
 	// read a wav file into this class
@@ -164,14 +163,14 @@ a trimmed down version that most wav files adhere to.
 			inFile.read(tmpLong); // read the ChunkSize
 			myChunkSize = byteArrayToLong(tmpLong);
 
-			String format = "" + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte();
+			inFile.skipBytes(4); // read the format identifier
 
 			// print what we've read so far
 			//System.out.println("chunkID:" + chunkID + " chunk1Size:" + myChunkSize + " format:" + format); // for debugging only
 
 
 
-			String subChunk1ID = "" + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte();
+			inFile.skipBytes(4); // read the SubChunk1ID
 
 			inFile.read(tmpLong); // read the SubChunk1Size
 			mySubChunk1Size = byteArrayToLong(tmpLong);
@@ -181,7 +180,7 @@ a trimmed down version that most wav files adhere to.
 
 			inFile.read(tmpInt); // read the # of channels (1 or 2)
 			myChannels = byteArrayToInt(tmpInt);
-			
+
 			inFile.read(tmpLong); // read the samplerate
 			mySampleRate = byteArrayToLong(tmpLong);
 
@@ -200,6 +199,9 @@ a trimmed down version that most wav files adhere to.
 
 			// read the data chunk header - reading this IS necessary, because not all wav files will have the data chunk here - for now, we're just assuming that the data chunk is here
 			String dataChunkID = "" + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte() + (char)inFile.readByte();
+			if (!"data".equals(dataChunkID)) {
+				return false;
+			}
 
 			inFile.read(tmpLong); // read the size of the data
 			myDataSize = byteArrayToLong(tmpLong);
@@ -209,12 +211,24 @@ a trimmed down version that most wav files adhere to.
 			myData = new byte[(int)myDataSize];
 			inFile.read(myData);
 
-			// close the input stream
-			inFile.close();
 		}
 		catch(Exception e)
 		{
 			return false;
+		}
+		finally
+		{
+			if (inFile != null)
+			{
+				try
+				{
+					inFile.close();
+				}
+				catch(Exception e)
+				{
+					// The original read result should not be masked by a close failure.
+				}
+			}
 		}
 
 		return true; // this should probably be something more descriptive
@@ -230,19 +244,20 @@ a trimmed down version that most wav files adhere to.
 		myBlockAlign = 2; // 1 sample 2 byte
 		myBitsPerSample = 16;
 	}
-	
+
 	// write out the wav file
 	public boolean save()
 	{
 		try
 		{
-			DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(myPath));
+			try (DataOutputStream outFile = new DataOutputStream(new FileOutputStream(myPath)))
+			{
 
 			// write the wav file per the wav file format
 			outFile.writeBytes("RIFF");					// 00 - RIFF
 			outFile.write(intToByteArray((int)myChunkSize), 0, 4);		// 04 - how big is the rest of this file?
 			outFile.writeBytes("WAVE");					// 08 - WAVE
-			outFile.writeBytes("fmt ");					// 12 - fmt 
+			outFile.writeBytes("fmt ");					// 12 - fmt
 			outFile.write(intToByteArray((int)mySubChunk1Size), 0, 4);	// 16 - size of this chunk
 			outFile.write(shortToByteArray((short)myFormat), 0, 2);		// 20 - what is the audio format? 1 for PCM = Pulse Code Modulation
 			outFile.write(shortToByteArray((short)myChannels), 0, 2);	// 22 - mono or stereo? 1 or 2?  (or 5 or ???)
@@ -253,6 +268,7 @@ a trimmed down version that most wav files adhere to.
 			outFile.writeBytes("data");					// 36 - data
 			outFile.write(intToByteArray((int)myDataSize), 0, 4);		// 40 - how big is this data chunk
 			outFile.write(myData);						// 44 - the actual data itself - just a long string of numbers
+			}
 		}
 		catch(Exception e)
 		{
@@ -263,18 +279,17 @@ a trimmed down version that most wav files adhere to.
 		return true;
 	}
 
-	
+
 	public boolean save2()
 	{
-		try
-		{
-			DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(myPath));
+			try (DataOutputStream outFile = new DataOutputStream(new FileOutputStream(myPath)))
+			{
 
 			// write the wav file per the wav file format
 			outFile.writeBytes("RIFF");										// 00 - RIFF
 			outFile.writeInt(Integer.reverseBytes((int)myChunkSize));		// 04 - how big is the rest of this file?
 			outFile.writeBytes("WAVE");										// 08 - WAVE
-			outFile.writeBytes("fmt ");										// 12 - fmt 
+			outFile.writeBytes("fmt ");										// 12 - fmt
 			outFile.writeInt(Integer.reverseBytes((int)mySubChunk1Size));	// 16 - size of this chunk
 			outFile.writeShort(Short.reverseBytes((short)myFormat));		// 20 - what is the audio format? 1 for PCM = Pulse Code Modulation
 			outFile.writeShort(Short.reverseBytes((short)myChannels));		// 22 - mono or stereo? 1 or 2?  (or 5 or ???)
@@ -286,6 +301,7 @@ a trimmed down version that most wav files adhere to.
 			outFile.writeInt(Integer.reverseBytes((int)myDataSize));		// 40 - how big is this data chunk
 			outFile.write(myData);											// 44 - the actual data itself - just a long string of numbers
 		}
+		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
@@ -294,9 +310,9 @@ a trimmed down version that most wav files adhere to.
 
 		return true;
 	}
-	
-	
-	
+
+
+
 	// return a printable summary of the wav file
 	public String getSummary()
 	{

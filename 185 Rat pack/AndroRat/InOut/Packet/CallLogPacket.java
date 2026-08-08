@@ -12,13 +12,13 @@ public class CallLogPacket implements Packet{
 	private ArrayList<CallPacket> list;
 
 	public CallLogPacket() {
-		
+
 	}
-	
+
 	public CallLogPacket(ArrayList<CallPacket> ar) {
 		list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -30,6 +30,7 @@ public class CallLogPacket implements Packet{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void parse(byte[] packet) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
@@ -39,7 +40,7 @@ public class CallLogPacket implements Packet{
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public ArrayList<CallPacket> getList() {
 		return list;
 	}

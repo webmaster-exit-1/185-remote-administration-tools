@@ -59,7 +59,8 @@ public class FileHandler implements PacketHandler {
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
+		// File packets are processed by handlePacket, which has access to the
+		// server channel and can unregister this handler after processing.
 	}
 	/*
 	@Override

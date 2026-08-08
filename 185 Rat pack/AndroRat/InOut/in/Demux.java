@@ -16,9 +16,6 @@ public class Demux {
 	// l'identifiant du client
 	private String imei;
 
-	// le buffer de lecture
-	private ByteBuffer buffer;
-
 	// variables de controle
 	private boolean partialDataExpected, reading;
 

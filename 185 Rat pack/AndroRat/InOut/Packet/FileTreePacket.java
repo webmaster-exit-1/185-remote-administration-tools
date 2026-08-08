@@ -13,13 +13,13 @@ public class FileTreePacket implements Packet{
 	private ArrayList<MyFile> list;
 
 	public FileTreePacket() {
-		
+
 	}
-	
+
 	public FileTreePacket(ArrayList<MyFile> ar) {
 		list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -31,6 +31,7 @@ public class FileTreePacket implements Packet{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void parse(byte[] packet) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
@@ -40,7 +41,7 @@ public class FileTreePacket implements Packet{
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public ArrayList<MyFile> getList() {
 		return list;
 	}

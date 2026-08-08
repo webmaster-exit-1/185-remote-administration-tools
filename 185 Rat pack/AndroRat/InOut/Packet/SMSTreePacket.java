@@ -35,7 +35,19 @@ public class SMSTreePacket implements Packet{
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(bis);
-			list = (ArrayList<SMSPacket>) in.readObject();
+			Object object = in.readObject();
+			if (!(object instanceof ArrayList<?>)) {
+				throw new IOException("Invalid SMS packet list");
+			}
+			ArrayList<?> parsedList = (ArrayList<?>) object;
+			ArrayList<SMSPacket> smsList = new ArrayList<>();
+			for (Object item : parsedList) {
+				if (!(item instanceof SMSPacket)) {
+					throw new IOException("Invalid SMS packet");
+				}
+				smsList.add((SMSPacket) item);
+			}
+			list = smsList;
 		} catch (Exception e) {
 		}
 	}

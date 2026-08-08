@@ -22,10 +22,7 @@ package server;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-
 import gui.GUI;
 import inout.Protocol;
 import Packet.CommandPacket;
@@ -66,12 +63,12 @@ public class ClientHandler extends Thread {
 		while (connected) {
 
 			try {
-				
+
 			     //System.out.println("");
-				
+
 				//buffer = receiver.read();
 			     buffer = receiver.read(buffer);
-			     
+
 				try {
 					if (demux.receive(buffer)) {
 						//System.out.println("Restant: "+buffer.remaining()+" Position: "+buffer.position()+" Limit: "+buffer.limit());
@@ -84,7 +81,7 @@ public class ClientHandler extends Thread {
 					try {
 						clientSocket.close();
 						mainGUI.deleteUser(imei);
-						
+
 					} catch (IOException e1) {
 					}*/
 					server.getGui().logErrTxt("ERROR: while deconding received stream (Demux) : "+e.getCause());
@@ -94,7 +91,7 @@ public class ClientHandler extends Thread {
 			catch (IOException e) {
 				connected = false;
 				try {
-					
+
 					clientSocket.close();
 					mainGUI.deleteUser(imei);
 				} catch (IOException e1) {

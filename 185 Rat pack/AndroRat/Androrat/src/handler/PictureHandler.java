@@ -25,25 +25,24 @@ import Packet.RawPacket;
 import gui.GUI;
 
 public class PictureHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
-	private String imei;
-	
+
 	public PictureHandler(int chan, String imei, GUI gui) {
 		channel = chan;
-		this.imei = imei;
 		this.gui = gui;
 	}
 
 	@Override
 	public void receive(Packet p, String imei) {
-		// TODO Auto-generated method stub
-		
+		// Picture packets are processed by handlePacket, which has access to the
+		// server channel and can unregister this handler after processing.
+
 	}
 
 	@Override
-	public void handlePacket(Packet p, String imei, Server c) 
+	public void handlePacket(Packet p, String imei, Server c)
 	{
 		gui.logTxt("Image data has been received");
 		c.getChannelHandlerMap().get(imei).removeListener(channel);

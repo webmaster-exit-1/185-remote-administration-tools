@@ -19,21 +19,17 @@
 */
 package handler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-
 import server.Server;
 import Packet.FileTreePacket;
 import Packet.Packet;
 import gui.GUI;
 
 public class FileTreeHandler implements PacketHandler {
-	
+
 	private GUI gui;
 	private int channel;
 	private String imei;
-	
+
 	public FileTreeHandler(int chan, String imei, GUI gui) {
 		channel = chan;
 		this.imei = imei;
